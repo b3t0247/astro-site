@@ -1,0 +1,311 @@
+local_backend: true
+
+backend:
+  name: git-gateway
+
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+collections:
+  # -------------------------
+  # SERMONS
+  # -------------------------
+  - name: "sermons"
+    label: "Sermons"
+    folder: "src/content-collections/sermons"
+    create: true
+    extension: "md"
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date Preached", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
+
+      - label: "Sermon Series"
+        name: "series"
+        widget: "relation"
+        collection: "series"
+        search_fields: ["title"]
+        value_field: "title"
+        display_fields: ["title"]
+
+      - label: "Sermon Text (OSIS format)"
+        name: "scripture"
+        widget: "list"
+        field:
+          name: "reference"
+          widget: "string"
+
+      - label: "Preacher"
+        name: "preacher"
+        widget: "relation"
+        collection: "preachers"
+        search_fields: ["name"]
+        value_field: "name"
+        display_fields: ["name"]
+
+      - { label: "Media URL", name: "mediaURL", widget: "string", required: false }
+      - { label: "Bulletin URL", name: "bulletinURL", widget: "string", required: false }
+      - { label: "Notes", name: "body", widget: "markdown" }
+
+  # -------------------------
+  # PREACHERS
+  # -------------------------
+  - name: "preachers"
+    label: "Preachers"
+    folder: "src/content-collections/preachers"
+    create: true
+    extension: "md"
+    slug: "{{slug}}"
+    fields:
+      - { label: "Name", name: "name", widget: "string" }
+      - { label: "Guest Preacher", name: "isGuest", widget: "boolean", default: true }
+      - { label: "Priority", name: "priority", widget: "number", default: 0 }
+      - { label: "Picture", name: "image", widget: "image", required: false }
+      - { label: "Bio", name: "body", widget: "markdown" }
+
+  # -------------------------
+  # SERIES
+  # -------------------------
+  - name: "series"
+    label: "Sermon Series"
+    folder: "src/content-collections/series"
+    create: true
+    extension: "md"
+    slug: "{{slug}}"
+    fields:
+      - { label: "Series Title", name: "title", widget: "string" }
+      - { label: "Start Date", name: "startDate", widget: "datetime", format: "YYYY-MM-DD" }
+      - { label: "Series Image", name: "image", widget: "image", required: false }
+
+      - label: "Bible Books"
+        name: "book"
+        widget: "select"
+        multiple: true
+        options:
+          - Genesis
+          - Exodus
+          - Leviticus
+          - Numbers
+          - Deuteronomy
+          - Joshua
+          - Judges
+          - Ruth
+          - 1 Samuel
+          - 2 Samuel
+          - 1 Kings
+          - 2 Kings
+          - 1 Chronicles
+          - 2 Chronicles
+          - Ezra
+          - Nehemiah
+          - Esther
+          - Job
+          - Psalms
+          - Proverbs
+          - Ecclesiastes
+          - Song of Solomon
+          - Isaiah
+          - Jeremiah
+          - Lamentations
+          - Ezekiel
+          - Daniel
+          - Hosea
+          - Joel
+          - Amos
+          - Obadiah
+          - Jonah
+          - Micah
+          - Nahum
+          - Habakkuk
+          - Zephaniah
+          - Haggai
+          - Zechariah
+          - Malachi
+          - Matthew
+          - Mark
+          - Luke
+          - John
+          - Acts
+          - Romans
+          - 1 Corinthians
+          - 2 Corinthians
+          - Galatians
+          - Ephesians
+          - Philippians
+          - Colossians
+          - 1 Thessalonians
+          - 2 Thessalonians
+          - 1 Timothy
+          - 2 Timothy
+          - Titus
+          - Philemon
+          - Hebrews
+          - James
+          - 1 Peter
+          - 2 Peter
+          - 1 John
+          - 2 John
+          - 3 John
+          - Jude
+          - Revelation
+
+  # -------------------------
+  # BLOG
+  # -------------------------
+  - name: "blog"
+    label: "Blog"
+    folder: "src/content-collections/blog"
+    create: true
+    extension: "md"
+    slug: "{{date}}-{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Date Posted", name: "date", widget: "datetime", format: "YYYY-MM-DD" }
+
+      - label: "Tags"
+        name: "tags"
+        widget: "list"
+        field:
+          name: "tag"
+          widget: "string"
+
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  # -------------------------
+  # PAGES
+  # -------------------------
+  - name: "pages"
+    label: "Pages"
+    folder: "src/content-collections/pages"
+    create: true
+    extension: "md"
+    slug: "{{slug}}"
+    fields:
+      - { label: "Title", name: "title", widget: "string" }
+      - { label: "Order", name: "order", widget: "number", required: false }
+
+      - label: "Type"
+        name: "type"
+        widget: "select"
+        options:
+          - { label: "Blog", value: "blog" }
+          - { label: "Events", value: "events" }
+          - { label: "Sermons", value: "sermons" }
+
+      - { label: "Body", name: "body", widget: "markdown" }
+
+  # -------------------------
+  # SITE CONFIG (JSON FILE)
+  # -------------------------
+  - name: "config"
+    label: "Site Config"
+    files:
+      - name: "site"
+        label: "Site Configuration"
+        file: "src/content-collections/site.config.json"
+        fields:
+          - label: "General"
+            name: "general"
+            widget: "object"
+            fields:
+              - { label: "Church Name", name: "name", widget: "string" }
+              - { label: "Description", name: "description", widget: "string" }
+              - { label: "Logo", name: "logo", widget: "image", required: false }
+              - { label: "YouTube Channel", name: "youtube", widget: "string" }
+
+          - label: "Header"
+            name: "header"
+            widget: "object"
+            fields:
+              - { label: "Display Title", name: "displayTitle", widget: "boolean" }
+              - { label: "Display Logo", name: "displayLogo", widget: "boolean" }
+
+          - label: "Body"
+            name: "body"
+            widget: "object"
+            fields:
+              - label: "Hero"
+                name: "hero"
+                widget: "object"
+                fields:
+                  - label: "Hero Text"
+                    name: "text"
+                    widget: "code"
+                    default_language: "html"
+                    output_code_only: true
+                  - { label: "Background Image", name: "bgImage", widget: "image", required: false }
+
+              - label: "CTA"
+                name: "cta"
+                widget: "object"
+                fields:
+                  - label: "CTA Text"
+                    name: "text"
+                    widget: "code"
+                    default_language: "html"
+                    output_code_only: true
+                  - { label: "CTA Link", name: "link", widget: "string" }
+
+          - label: "Footer"
+            name: "footer"
+            widget: "object"
+            fields:
+              - label: "Left Sections"
+                name: "left"
+                widget: "object"
+                fields:
+                  - label: "Sections"
+                    name: "sections"
+                    widget: "list"
+                    fields:
+                      - { label: "Heading", name: "heading", widget: "string" }
+                      - label: "Description"
+                        name: "description"
+                        widget: "code"
+                        default_language: "html"
+                        output_code_only: true
+
+                  - label: "Social Icons"
+                    name: "social"
+                    widget: "list"
+                    fields:
+                      - { label: "Name", name: "name", widget: "string" }
+                      - { label: "Icon", name: "icon", widget: "string" }
+                      - { label: "Link", name: "link", widget: "string" }
+                      - { label: "Hint", name: "hint", widget: "string", required: false }
+
+              - label: "Form"
+                name: "form"
+                widget: "object"
+                fields:
+                  - { label: "Active", name: "isActive", widget: "boolean" }
+                  - { label: "Heading", name: "heading", widget: "string" }
+                  - { label: "Description", name: "description", widget: "markdown" }
+
+              - label: "Give"
+                name: "give"
+                widget: "object"
+                fields:
+                  - { label: "Active", name: "isActive", widget: "boolean" }
+                  - { label: "Heading", name: "heading", widget: "string" }
+                  - { label: "Description", name: "description", widget: "markdown" }
+                  - { label: "Link", name: "link", widget: "string" }
+
+          - label: "Theme"
+            name: "theme"
+            widget: "object"
+            fields:
+              - label: "Color Scheme"
+                name: "colorScheme"
+                widget: "select"
+                options:
+                  - { label: "Auto", value: "auto" }
+                  - { label: "Light", value: "light" }
+                  - { label: "Dark", value: "dark" }
+
+              - label: "Custom CSS"
+                name: "customCSS"
+                widget: "code"
+                default_language: "css"
+                output_code_only: true
+
