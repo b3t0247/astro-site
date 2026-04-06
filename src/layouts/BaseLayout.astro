@@ -21,7 +21,7 @@ const metaDescription =
   siteConfig?.data.general.description ?? "Church website built with Astro.";
 ---
 
-<script is:inline define:vars={{ colorScheme }}>
+<!-- <script is:inline define:vars={{ colorScheme }}>
   const getThemePreference = () => {
     return window.matchMedia("(prefers-color-scheme: dark)").matches
       ? "dark"
@@ -32,6 +32,25 @@ const metaDescription =
     colorScheme === "dark" ||
     (colorScheme === "auto" && getThemePreference() === "dark");
   document.documentElement.classList[isDark ? "add" : "remove"]("dark");
+</script> -->
+
+<script is:inline define:vars={{ colorScheme }}>
+  const getStoredTheme = () => localStorage.getItem("theme");
+
+  const getSystemTheme = () =>
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+
+  const getCMSTheme = () => {
+    if (colorScheme === "dark") return "dark";
+    if (colorScheme === "light") return "light";
+    return getSystemTheme();
+  };
+
+  const theme = getStoredTheme() || getCMSTheme();
+
+  document.documentElement.classList.toggle("dark", theme === "dark");
 </script>
 
 <html lang="en">

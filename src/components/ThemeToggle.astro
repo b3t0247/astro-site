@@ -1,0 +1,76 @@
+---
+import { Sun, Moon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+const { initialTheme } = Astro.props;
+---
+
+<Button
+  id="theme-toggle"
+  aria-label="Toggle dark mode"
+  variant="ghost"
+  size="icon"
+  className="
+    relative flex items-center justify-center
+    rounded-full
+    transition
+    hover:bg-accent hover:text-accent-foreground
+    dark:hover:bg-accent
+  "
+>
+
+  <Sun
+    className="
+      sun absolute w-5 h-5 
+      transition-all duration-300 
+      opacity-100 rotate-0 
+      dark:opacity-0 dark:rotate-90
+    "
+  />
+  <Moon
+    className="
+      moon absolute w-5 h-5 
+      transition-all duration-300 
+      opacity-0 -rotate-90 
+      dark:opacity-100 dark:rotate-0
+    "
+  />
+</Button>
+
+<script define:vars={{ initialTheme }}>
+  const toggle = document.getElementById("theme-toggle");
+
+  const applyTheme = (theme) => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+  };
+
+  const getStoredTheme = () => localStorage.getItem("theme");
+
+  const getSystemTheme = () =>
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+
+  const getCMSTheme = () => {
+    if (initialTheme === "light") return "light";
+    if (initialTheme === "dark") return "dark";
+    return getSystemTheme(); // auto
+  };
+
+  const getInitialTheme = () => {
+    return getStoredTheme() || getCMSTheme();
+  };
+
+  applyTheme(getInitialTheme());
+
+  toggle?.addEventListener("click", () => {
+    const current = document.documentElement.classList.contains("dark")
+      ? "dark"
+      : "light";
+
+    const next = current === "dark" ? "light" : "dark";
+
+    applyTheme(next);
+    localStorage.setItem("theme", next);
+  });
+</script>
